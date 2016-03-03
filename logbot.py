@@ -69,15 +69,15 @@ DEBUG = False
 SERVER = "irc.freenode.net"
 PORT = 6667
 SERVER_PASS = None
-CHANNELS=["#excid3","#keryx"]
-NICK = "timber"
+CHANNELS=["#jolla-cn"]
+NICK = "sailorbot-cn"
 NICK_PASS = ""
 
 # The local folder to save logs
-LOG_FOLDER = "logs"
+LOG_FOLDER = "/home/www/irclogs"
 
 # The message returned when someone messages the bot
-HELP_MESSAGE = "Check out http://excid3.com"
+HELP_MESSAGE = "Hello,i'm a log bot :)"
 
 # FTP Configuration
 FTP_SERVER = ""
