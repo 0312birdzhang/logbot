@@ -245,7 +245,10 @@ class SingleServerIRCBot(SimpleIRCClient):
         """Start the bot."""
         self._connect()
         SimpleIRCClient.start(self)
-
+        
+    def reconnect(self):
+        """Reconnect to channel"""
+        self._connected_checker()
 
 class IRCDict:
     """A dictionary suitable for storing IRC-related things.
