@@ -39,6 +39,7 @@ import ftplib
 import sys
 import itertools
 from time import strftime
+import time
 try:
     from datetime import datetime
     from pytz import timezone
@@ -53,7 +54,7 @@ from ircbot import SingleServerIRCBot
 from irclib import nm_to_n
 
 import re
-
+import msice
 pat1 = re.compile(r"(^|[\n ])(([\w]+?://[\w\#$%&~.\-;:=,?@\[\]+]*)(/[\w\#$%&~/.\-;:=,?@\[\]+]*)?)", re.IGNORECASE | re.DOTALL)
 
 #urlfinder = re.compile("(?i)\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))")
@@ -69,15 +70,15 @@ DEBUG = False
 SERVER = "irc.freenode.net"
 PORT = 6667
 SERVER_PASS = None
-CHANNELS=["#excid3","#keryx"]
-NICK = "timber"
+CHANNELS=["#jolla-cn"]
+NICK = "sailorbot-cn"
 NICK_PASS = ""
 
 # The local folder to save logs
 LOG_FOLDER = "logs"
 
 # The message returned when someone messages the bot
-HELP_MESSAGE = "Check out http://excid3.com"
+HELP_MESSAGE = "I am a log bot"
 
 # FTP Configuration
 FTP_SERVER = ""
@@ -191,7 +192,7 @@ def replace_color(code, text):
     colors = {
         '30': '000316',
         '31': 'aa0000',
-        '32': '00aa00',
+        '32': 'FF69B4',
         '33': 'aa5500',
         '34': '0000aa',
         '35': 'E850A8',
@@ -223,7 +224,7 @@ class Logbot(SingleServerIRCBot):
         self.nick_pass = nick_pass
 
         self.load_channel_locations()
-        print "Logbot %s" % __version__
+        print "Logbot %s"  % __version__
         print "Connecting to %s:%i..." % (server, port)
         print "Press Ctrl-C to quit"
 
@@ -459,7 +460,9 @@ def main():
     except KeyboardInterrupt:
         if FTP_SERVER: bot.ftp.quit()
         bot.quit()
-
+    while True:
+        time.sleep(60)
+        bot.reconnect()
 
 if __name__ == "__main__":
     main()
