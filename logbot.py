@@ -52,9 +52,9 @@ except:
 
 from ircbot import SingleServerIRCBot
 from irclib import nm_to_n
-
+from ip import  reIPv4
+from ip import reply
 import re
-import msice
 pat1 = re.compile(r"(^|[\n ])(([\w]+?://[\w\#$%&~.\-;:=,?@\[\]+]*)(/[\w\#$%&~/.\-;:=,?@\[\]+]*)?)", re.IGNORECASE | re.DOTALL)
 
 #urlfinder = re.compile("(?i)\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))")
@@ -135,7 +135,7 @@ html_header = """<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
   </head>
   <body>
   <h1>%title%</h1>
-  <a href="..">Back</a><br />
+  <a href="index.html">Back</a><br />
   </body>
 </html>
 """
@@ -409,7 +409,11 @@ class Logbot(SingleServerIRCBot):
 
     def on_pubmsg(self, c, e):
         if e.arguments()[0].startswith(NICK):
-            c.privmsg(e.target(), self.format["help"])
+            if e.arguments()[0].strip(NICK).strip(":").strip(" ").startswith("ip"):
+                origin_ip = e.arguments()[0].strip(NICK).strip(":").strip(" ").strip("ip")
+                c.privmsg(e.target(), queryIp(origin_ip))
+            else:
+                c.privmsg(e.target(), self.format["help"])
         self.write_event("pubmsg", e)
 
     def on_pubnotice(self, c, e):
@@ -443,6 +447,14 @@ def connect_ftp():
     f.cwd(FTP_FOLDER)
     return f
 
+def queryIp(origin_ip):
+    try:
+        ip = re.search(reIPv4, origin_ip).group(0)
+    except Exception as e:
+        ip = origin_ip
+        print e
+    return reply(ip)
+
 def main():
     # Create the logs directory
     if not os.path.exists(LOG_FOLDER):
@@ -461,7 +473,7 @@ def main():
         if FTP_SERVER: bot.ftp.quit()
         bot.quit()
     while True:
-        time.sleep(60)
+        time.sleep(60.0)
         bot.reconnect()
 
 if __name__ == "__main__":
